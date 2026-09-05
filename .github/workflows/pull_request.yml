@@ -53,6 +53,11 @@ jobs:
   # This workflow contains a single job called "build"
   test_help:
     strategy:
+      # Measurement integrity, not a build change: fail-fast would cancel the
+      # sibling MySQL leg when one fails, voiding a whole arm. It biases toward
+      # baseline, since the instrumented arm carries the extra failure surface
+      # of the curiosity archive fetch.
+      fail-fast: false
       matrix:
         MYSQL_VERSION: [5.7, 8.0]
     # The type of runner that the job will run on
@@ -111,6 +116,7 @@ jobs:
   test_with_empty_db:
     needs: test_help
     strategy:
+      fail-fast: false
       matrix:
         MYSQL_VERSION: [5.7, 8.0]
     # The type of runner that the job will run on
